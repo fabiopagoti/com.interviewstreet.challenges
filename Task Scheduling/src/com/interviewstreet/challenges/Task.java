@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task>, Cloneable{
 
 	protected static Collection<Task> tasks_list;
 
@@ -51,7 +51,7 @@ public class Task implements Comparable<Task>{
 			this.minutes_worked++;
 			this.minutes_remaining--;
 			if (this.minutes_remaining == 0) {
-				this.delay = _current_time;
+				this.delay = (_current_time) - (this.deadline - 1);
 			}
 		}else{
 			throw new TaskCompleted("Task:\r" + this.id + " completed");
@@ -121,13 +121,19 @@ public class Task implements Comparable<Task>{
 		return true;
 	}
 	
-	public static void printTaskDelay(){
+	public static void printMaximumTaskDelay(){
+		int maximum_delay = 0;
+		int current_delay;
 		BufferedWriter out_task_delay = new BufferedWriter(new OutputStreamWriter(System.out));
 		try {
-			out_task_delay.write("\nprintTaskDelay\n");
 			for (Task current_task : Task.tasks_list) {
-				out_task_delay.write(Integer.toString(current_task.getDelay()) + "\n");
+				current_delay = current_task.getDelay();
+				if (current_delay > maximum_delay) {
+					maximum_delay = current_delay;
+				}
+
 			}
+			out_task_delay.write(Integer.toString(maximum_delay) + "\n");
 			out_task_delay.flush();
 		} catch (IOException e) {
 		}
@@ -189,6 +195,7 @@ public class Task implements Comparable<Task>{
 	public void setDelay(int delay) {
 		this.delay = delay;
 	}
+	
 	@Override
 	public int compareTo(Task o) {
 		if (this.getId() == o.getId()) {
@@ -201,5 +208,13 @@ public class Task implements Comparable<Task>{
 			}
 		}
 	}
-
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		Task clone_task = null;
+		clone_task = new Task(this.id, this.deadline, this.minutes);
+		return clone_task;
+	}
+		
 }

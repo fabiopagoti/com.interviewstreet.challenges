@@ -1,4 +1,4 @@
-package com.interviewstreet.challenges;
+package com.interviewstreet.challenges.tests;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.interviewstreet.challenges.Task;
+import com.interviewstreet.challenges.TaskCompleted;
 
 public class TaskTest {
 

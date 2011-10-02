@@ -2,6 +2,8 @@ package com.interviewstreet.challenges;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,15 +71,15 @@ public class TaskTest {
 			assertArrayEquals(new int[] {0,1}, new int[] {task.getMinutes_worked(), task.getMinutes_remaining()});
 
 			task = new Task(0, 2, 1);
-			task.work();
+			task.work(0);
 			assertArrayEquals(new int[] {1,0}, new int[] {task.getMinutes_worked(), task.getMinutes_remaining()});
 			
 			task = new Task(0, 2, 2);
 			assertArrayEquals(new int[] {0,2}, new int[] {task.getMinutes_worked(), task.getMinutes_remaining()});
 			
 			task = new Task(0, 2, 2);
-			task.work();
-			task.work();
+			task.work(0);
+			task.work(1);
 			assertArrayEquals(new int[] {2,0}, new int[] {task.getMinutes_worked(), task.getMinutes_remaining()});
 			
 			
@@ -146,7 +148,51 @@ public class TaskTest {
 
 	@Test
 	public final void testGetBestTaskToMinimizeDeadline() {
-		fail("Not yet implemented"); // TODO
+		ArrayList<Task> task_list;
+		Task actual_task;
+		Task expect_task;
+
+		// ---
+		task_list = new ArrayList<Task>(1);
+		actual_task = new Task(0, 1, 1);
+		task_list.add(actual_task);
+		expect_task = actual_task;
+		
+		Task.initTaskList(task_list);
+		actual_task = Task.getBestTaskToMinimizeDeadline(0);
+		
+		assertEquals(expect_task, actual_task);
+
+		// ---
+		task_list = new ArrayList<Task>(2);
+		actual_task = new Task(0, 1, 1);
+		task_list.add(actual_task);
+		expect_task = actual_task;
+		actual_task = new Task(1, 2, 1);
+		task_list.add(actual_task);
+		
+		Task.initTaskList(task_list);
+		actual_task = Task.getBestTaskToMinimizeDeadline(0);
+		
+		assertEquals(expect_task, actual_task);
+		
+		// ---
+		task_list = new ArrayList<Task>(3);
+		actual_task = new Task(0, 2, 2);
+		task_list.add(actual_task);
+		
+		actual_task = new Task(1, 1, 1);
+		task_list.add(actual_task);
+		expect_task = actual_task;
+		
+		actual_task = new Task(2, 4, 3);
+		task_list.add(actual_task);
+		
+		Task.initTaskList(task_list);
+		actual_task = Task.getBestTaskToMinimizeDeadline(0);
+		
+		assertEquals(expect_task, actual_task);
+		
 	}
 
 	@Test

@@ -109,8 +109,8 @@ The maximum time by which you overshoot is thus 2. No schedule can do better tha
 
 	@Override
 	public void solveChallenge() {
-		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
-
+		BufferedWriter out_task_order = new BufferedWriter(new OutputStreamWriter(System.out));
+	
 		Task task_to_be_done;
 		int allWorkingMinutes = Task.sumRemainingMinutes();
 
@@ -118,15 +118,17 @@ The maximum time by which you overshoot is thus 2. No schedule can do better tha
 			for (int time = 0; time < allWorkingMinutes; time++) {
 				task_to_be_done = Task.getBestTaskToMinimizeDeadline(time);
 				try {
-					task_to_be_done.work();
-					out.write(task_to_be_done.getId());
+					task_to_be_done.work(time);
 				} catch (TaskCompleted e) {
+					e.printStackTrace();
 				}
+				out_task_order.write("Task: "+ Integer.toString(task_to_be_done.getId()) + " - Delay: " + Integer.toString(task_to_be_done.getDelay())+"\n");
 			}
-
 			if (Task.isTasksCompleted()) {
-				out.flush();
+				Task.printTaskDelay();	
 			}
+			
+
 		}
 		catch (IOException e) {
 			e.printStackTrace();

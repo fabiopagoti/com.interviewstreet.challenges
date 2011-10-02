@@ -1,5 +1,8 @@
 package com.interviewstreet.challenges;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -16,12 +19,13 @@ public class Task implements Comparable<Task>{
 
 	public String toString() {
 		return 
-		" I:" + this.id + 
+		"I:" + this.id + 
 		" D:" + this.deadline +
 		" M:" + this.minutes +
 		" W:" + this.minutes_worked +
 		" R:" + this.minutes_remaining +
-		" L:" + this.delay;
+		" L:" + this.delay +
+		"\r";
 	}
 	/**
 	 * @param id
@@ -42,10 +46,13 @@ public class Task implements Comparable<Task>{
 		return minutes_remaining;
 	}
 
-	public void work() throws TaskCompleted {
+	public void work(int _current_time) throws TaskCompleted {
 		if (this.minutes_remaining > 0) {
 			this.minutes_worked++;
 			this.minutes_remaining--;
+			if (this.minutes_remaining == 0) {
+				this.delay = _current_time;
+			}
 		}else{
 			throw new TaskCompleted("Task:\r" + this.id + " completed");
 		}
@@ -80,19 +87,29 @@ public class Task implements Comparable<Task>{
 		int current_task_exp_delay;
 
 		for (Task task : Task.tasks_list) {
-
 			if (task.getMinutes_remaining() > 0) {
 				best_task = task;
+				break;
 			}
+		}
 
-			current_task_exp_delay = task.calculateExpectedDelay(_time);
-			best_task_exp_delay = best_task.calculateExpectedDelay(_time);
+		for (Task task : Task.tasks_list) {
+			if (task.getMinutes_remaining() > 0) {
 
-			if (current_task_exp_delay > best_task_exp_delay){			
-				best_task = task ;}
+				current_task_exp_delay = task.calculateExpectedDelay(_time);
+				best_task_exp_delay = best_task.calculateExpectedDelay(_time);
+
+				if (current_task_exp_delay > best_task_exp_delay){
+					best_task = task;
+				}
+				else if (current_task_exp_delay == best_task_exp_delay) {
+					if (task.getDeadline() < best_task.getDeadline()) {
+						best_task = task;			
+					}
+				}
+			}
 		}
 		return best_task;
-		
 	}
 
 	public static boolean isTasksCompleted() {
@@ -102,6 +119,19 @@ public class Task implements Comparable<Task>{
 			}  
 		}
 		return true;
+	}
+	
+	public static void printTaskDelay(){
+		BufferedWriter out_task_delay = new BufferedWriter(new OutputStreamWriter(System.out));
+		try {
+			out_task_delay.write("\nprintTaskDelay\n");
+			for (Task current_task : Task.tasks_list) {
+				out_task_delay.write(Integer.toString(current_task.getDelay()) + "\n");
+			}
+			out_task_delay.flush();
+		} catch (IOException e) {
+		}
+		
 	}
 
 	public static Collection<Task> getTasks_list() {

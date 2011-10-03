@@ -56,7 +56,7 @@ public class Solution implements IChallenge{
 	@Override
 	public void solveChallenge() {
 
-		Task task_to_be_done;
+		Task task_to_be_done;;
 		int allWorkingMinutes = Task.sumRemainingMinutes();
 
 		for (int time = 0; time < allWorkingMinutes; time++) {
